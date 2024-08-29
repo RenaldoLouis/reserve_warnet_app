@@ -1,4 +1,5 @@
 import { Check, CheckCircle, Pencil, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 interface TodoItemProps {
   title: string;
@@ -15,17 +16,77 @@ const TodoItem = ({
   updatedAt,
   handleEdit,
 }: TodoItemProps) => {
-  const completeTodo = () => {
-    alert("task completed");
+
+  const completeTodo = async () => {
+    try {
+      const apiUrl = `/api/todo/${id}/update`;
+
+      const requestData = {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await fetch(apiUrl, requestData);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to post title: ${response.status} - ${response.statusText}`
+        );
+      }
+
+      toast.success("Todo updated");
+
+      // refresh page on successful request
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+    } finally {
+      // setIsLoading(false);
+    }
   };
+
 
   const editTask = () => {
     handleEdit({ title, id });
   };
 
-  const deleteTask = () => {
-    alert("delete task completed");
+  //components/todo-item.tsx
+
+  const deleteTask = async () => {
+    alert(`delete ${title}?`);
+    try {
+      const apiUrl = `/api/todo/${id}/delete`;
+
+      const requestData = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await fetch(apiUrl, requestData);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to delete ${title} - ${response.statusText}`
+        );
+      }
+
+      toast.success("Todo deleted");
+
+      // refresh page on successful request
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+      toast.error("something went wrong");
+    } finally {
+      // setIsLoading(false);
+    }
   };
+
 
   const todoItemStyle = isCompleted
     ? "w-full rounded-sm border p-2 flex bg-green-100 text-green-600"

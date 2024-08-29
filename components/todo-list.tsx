@@ -1,43 +1,40 @@
+import { useEffect, useState } from "react";
 import { formatDate } from "../lib/format-date";
 import TodoItem from "./todo-item";
+import toast from "react-hot-toast";
 
 interface TodoListProps {
   handleEdit: ({ title, id }: { title: string; id: string }) => void;
 }
 
 const TodoList = ({ handleEdit }: TodoListProps) => {
-  //  useEffect(() => {
-  //    const fetchTodos = async () => {
+  const [todos, setTodos] = useState([]);
 
-  //     fetch todos
+  useEffect(() => {
+    //fetch todos
+    const fetchTodos = async () => {
+      try {
+        const response = await fetch(`/api/todo`, {
+          next: { revalidate: 3600 },
+        });
 
-  //    };
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch items: ${response.status}`
+          );
+        }
 
-  //    call fetchTodos
+        const data = await response.json();
+        setTodos(data);
+      } catch (error: any) {
+        console.error(`Error fetching items: ${error.message}`);
+        toast.error("unable to fetch todos at this time");
+      }
+    };
+    // call fetch fetchTodos
+    fetchTodos();
+  }, []);
 
-  //  }, []);
-
-  const todos = [
-    {
-      title: "Drink Water",
-      id: "1",
-      isCompleted: false,
-      updatedAt: new Date(),
-    },
-    {
-      title: "Have some rest",
-      id: "2",
-      isCompleted: false,
-      updatedAt: new Date(),
-    },
-    ,
-    {
-      title: "Take a walk",
-      id: "3",
-      isCompleted: true,
-      updatedAt: new Date(),
-    },
-  ];
   return todos.length > 0 ? (
     <ul className="w-full rounded-sm border p-3 space-y-2">
       {todos.map((todo) => {
