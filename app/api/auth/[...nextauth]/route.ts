@@ -11,7 +11,6 @@ const authHandler = NextAuth({
             },
             async authorize(credentials) {
                 try {
-                    console.log("auth", credentials)
                     const response = await
                         fetch(`${process.env.NEXTAUTH_URL}/api/login`, { // http://localhost:3000
                             method: 'POST',
@@ -23,7 +22,6 @@ const authHandler = NextAuth({
                                 password: credentials?.password
                             })
                         })
-                    console.log("response", response)
                     const json = await response.json();
 
                     if (response.status === 200) {
