@@ -37,7 +37,7 @@ const TodoList = ({ handleEdit }: TodoListProps) => {
 
   return todos.length > 0 ? (
     <ul className="w-full rounded-sm border p-3 space-y-2">
-      {todos.map((todo) => {
+      {todos.map((todo: any) => {
         const updatedDate = formatDate(todo?.updatedAt!);
         return (
           <TodoItem
